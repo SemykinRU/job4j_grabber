@@ -19,15 +19,15 @@ public class PostModel {
             return false;
         }
         PostModel postModel = (PostModel) o;
-        return Objects.equals(title, postModel.title)
+        return id == postModel.id
+                && Objects.equals(title, postModel.title)
                 && Objects.equals(link, postModel.link)
-                && Objects.equals(description, postModel.description)
                 && Objects.equals(created, postModel.created);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, link, description, created);
+        return Objects.hash(id, title, link, created);
     }
 
     @Override
