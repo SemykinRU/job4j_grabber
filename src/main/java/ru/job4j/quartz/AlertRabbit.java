@@ -13,69 +13,24 @@ import static org.quartz.TriggerBuilder.*;
 import static org.quartz.SimpleScheduleBuilder.*;
 
 public class AlertRabbit {
-    private int interval;
-    private Connection connection;
-
-    public AlertRabbit() {
-        setInterval();
-        init();
-    }
-
-    public void setConnection(Connection connection) {
-        this.connection = connection;
-    }
-
-    public Connection getConnection() {
-        return connection;
-    }
-
-    public void close() throws SQLException {
-        if (connection != null) {
-            connection.close();
-        }
-    }
-
-    private void init() {
-        try (InputStream in = AlertRabbit.class.getClassLoader().getResourceAsStream("rabbit.properties")) {
-            Properties config = new Properties();
-            config.load(in);
-            Class.forName(config.getProperty("jdbc.driver"));
-            connection = DriverManager.getConnection(
-                    config.getProperty("jdbc.url"),
-                    config.getProperty("jdbc.username"),
-                    config.getProperty("jdbc.password"));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public int getInterval() {
-        return interval;
-    }
-
-    public void setInterval() {
-        try (InputStream in = AlertRabbit.class.getClassLoader().getResourceAsStream("rabbit.properties")) {
-            Properties config = new Properties();
-            config.load(in);
-            this.interval = Integer.parseInt(config.getProperty("rabbit.interval"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
+    private final static Properties CONFIG = new Properties();
     public static void main(String[] args) {
-        AlertRabbit rabbit = new AlertRabbit();
-        try {
+        try (InputStream in = AlertRabbit.class.getClassLoader().getResourceAsStream("rabbit.properties")) {
+            CONFIG.load(in);
+            Class.forName(CONFIG.getProperty("jdbc.driver"));
+            Connection connection = DriverManager.getConnection(
+                    CONFIG.getProperty("jdbc.url"),
+                    CONFIG.getProperty("jdbc.username"),
+                    CONFIG.getProperty("jdbc.password"));
             Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
             scheduler.start();
             JobDataMap data = new JobDataMap();
-            data.put("connect", rabbit.getConnection());
+            data.put("connect", connection);
             JobDetail job = newJob(Rabbit.class)
                     .usingJobData(data)
                     .build();
             SimpleScheduleBuilder times = simpleSchedule()
-                    .withIntervalInSeconds(rabbit.getInterval())
+                    .withIntervalInSeconds(Integer.parseInt(CONFIG.getProperty("rabbit.interval")))
                     .repeatForever();
             Trigger trigger = newTrigger()
                     .startNow()
