@@ -99,6 +99,7 @@ public class PostModel {
                 + ", link='" + link + '\''
                 + ", description='" + description + '\''
                 + ", created=" + created
+                + ", update=" + update
                 + '}';
     }
 }
