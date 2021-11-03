@@ -3,24 +3,22 @@ package ru.job4j.html;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class PostModel {
+public class Post {
     private int id;
     private String title;
     private String link;
     private String description;
     private LocalDateTime created;
-    private LocalDateTime update;
 
-    public PostModel() {
+    public Post() {
     }
 
-    public PostModel(int id, String title, String link, String description, LocalDateTime created, LocalDateTime update) {
+    public Post(int id, String title, String link, String description, LocalDateTime created) {
         this.id = id;
         this.title = title;
         this.link = link;
         this.description = description;
         this.created = created;
-        this.update = update;
     }
 
     public int getId() {
@@ -63,14 +61,6 @@ public class PostModel {
         this.created = created;
     }
 
-    public LocalDateTime getUpdate() {
-        return update;
-    }
-
-    public void setUpdate(LocalDateTime update) {
-        this.update = update;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -79,11 +69,11 @@ public class PostModel {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        PostModel postModel = (PostModel) o;
-        return id == postModel.id
-                && Objects.equals(title, postModel.title)
-                && Objects.equals(link, postModel.link)
-                && Objects.equals(created, postModel.created);
+        Post post = (Post) o;
+        return id == post.id
+                && Objects.equals(title, post.title)
+                && Objects.equals(link, post.link)
+                && Objects.equals(created, post.created);
     }
 
     @Override
@@ -99,7 +89,6 @@ public class PostModel {
                 + ", link='" + link + '\''
                 + ", description='" + description + '\''
                 + ", created=" + created
-                + ", update=" + update
                 + '}';
     }
 }
