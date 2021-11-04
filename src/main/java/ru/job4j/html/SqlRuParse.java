@@ -24,7 +24,7 @@ public class SqlRuParse implements Parse {
     private final static String BASE_URL = "https://www.sql.ru/forum/job-offers";
     private static DateTimeParser dateTimeParser;
     private static Elements row = null;
-    private static final Integer PAGE_COUNT = 2;
+    private static final Integer PAGE_COUNT = 1;
 
     public SqlRuParse(DateTimeParser dateTimeParser) {
         SqlRuParse.dateTimeParser = dateTimeParser;
