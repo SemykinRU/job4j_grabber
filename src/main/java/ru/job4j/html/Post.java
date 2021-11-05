@@ -83,7 +83,7 @@ public class Post {
 
     @Override
     public String toString() {
-        return "PostModel{"
+        return "Post{"
                 + "id=" + id
                 + ", title='" + title + '\''
                 + ", link='" + link + '\''

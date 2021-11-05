@@ -12,6 +12,7 @@ import java.net.Socket;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 
 import static org.quartz.JobBuilder.newJob;
@@ -31,8 +32,8 @@ public class Grabber implements Grab {
         return scheduler;
     }
 
-    public void cfg() throws IOException {
-        try (InputStream in = Grabber.class.getClassLoader().getResourceAsStream("test.properties")) {
+    public void cfg(String path) throws IOException {
+        try (InputStream in = new FileInputStream(path)) {
             cfg.load(in);
         }
     }
@@ -86,7 +87,7 @@ public class Grabber implements Grab {
             Parse parse = (Parse) map.get("parse");
             try {
                 List<Post> list = parse.list(SQL_RU_JOB);
-                list.forEach(store::save);
+                list.stream().filter(x -> x.getTitle().contains("Java") && !x.getTitle().contains("JavaScript")).forEach(store::save);
             } catch (ParseException | IOException e) {
                 e.printStackTrace();
             }
@@ -96,7 +97,7 @@ public class Grabber implements Grab {
 
     public static void main(String[] args) throws Exception {
         Grabber grab = new Grabber();
-        grab.cfg();
+        grab.cfg(Objects.requireNonNull(Grabber.class.getClassLoader().getResource("test.properties")).getPath());
         Scheduler scheduler = grab.scheduler();
         Store store = grab.store();
         grab.init(new SqlRuParse(new SqlRuDateTimeParser()), store, scheduler);
